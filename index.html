@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Law Firms Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f9f7f4;
+      --card-bg: #ffffff;
+      --text: #2c2c2c;
+      --accent: #d4a574;
+      --accent-dark: #b5895c;
+      --border: #e8e3dc;
+      --shadow: rgba(0,0,0,0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--accent-dark);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 220px;
+      margin: 15px 0;
+    }
+
+    .firm-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .firm-btn {
+      padding: 10px 18px;
+      background: white;
+      border: 2px solid var(--accent);
+      color: var(--accent-dark);
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .firm-btn.active, .firm-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .highlight {
+      background: #fff9f0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .metric-value {
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .trend-up { color: #2e8b57; }
+    .trend-stable { color: #708090; }
+    .trend-growth { color: #4682b4; }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Law Firms Comparative Dashboard</h1>
+    <p>Financials, Culture, Growth & Chicago Office Insights (2023–2025)</p>
+  </header>
+
+  <div class="firm-selector">
+    <button class="firm-btn active" data-firm="baker">Baker Hostetler</button>
+    <button class="firm-btn" data-firm="sheppard">Sheppard Mullin</button>
+    <button class="firm-btn" data-firm="faegre">Faegre Drinker</button>
+    <button class="firm-btn" data-firm="willkie">Willkie Farr</button>
+  </div>
+
+  <!-- Baker Hostetler -->
+  <div id="baker" class="firm-content">
+    <div class="grid">
+      <div class="card">
+        <h3>Financial Snapshot</h3>
+        <canvas id="bakerRevenueChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Headcount & Growth</h3>
+        <canvas id="bakerHeadcountChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Firm Vitals</h3>
+        <table>
+          <tr><th>Metric</th><th>Value</th><th>Trend</th></tr>
+          <tr><td>Am Law Rank</td><td>51–100</td><td class="trend-stable">Stable</td></tr>
+          <tr><td>Gross Revenue</td><td class="metric-value">$1B+</td><td class="trend-growth">Strong Growth</td></tr>
+          <tr><td>Attorneys</td><td class="metric-value">1,000+</td><td class="trend-up">Growing</td></tr>
+          <tr><td>Offices</td><td>18</td><td class="trend-up">Expansion</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Practice Strengths</h3>
+        <canvas id="bakerPracticeChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Chicago Office</h3>
+        <p><strong>Address:</strong> One North Wacker Drive</p>
+        <p><strong>Focus:</strong> M&A, IP, Litigation, Privacy, L&E</p>
+        <p><strong>2025 Hires:</strong> 2 L&E Partners (Immigration)</p>
+        <p class="highlight">Opportunity: Middle-Market M&A Partner</p>
+      </div>
+
+      <div class="card">
+        <h3>Culture & Retention</h3>
+        <p>Top 10 in Midlevel Associate Survey (5 years)</p>
+        <p>#11 Best Culture | #10 Career Outlook (Vault 2026)</p>
+        <p>Supportive, collaborative, Midwest-friendly</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sheppard Mullin -->
+  <div id="sheppard" class="firm-content" style="display:none;">
+    <div class="grid">
+      <div class="card">
+        <h3>Financial Growth</h3>
+        <canvas id="sheppardRevenueChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Profitability & Retention</h3>
+        <canvas id="sheppardPepChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Firm Vitals</h3>
+        <table>
+          <tr><th>Metric</th><th>Value</th><th>Trend</th></tr>
+          <tr><td>Gross Revenue</td><td class="metric-value">$1.121B</td><td class="trend-up">+6.5% YoY</td></tr>
+          <tr><td>PEP</td><td class="metric-value">$2.325M</td><td class="trend-up">+10.1% YoY</td></tr>
+          <tr><td>Headcount</td><td>932</td><td class="trend-stable">Steady</td></tr>
+          <tr><td>Retention</td><td class="metric-value">94%</td><td class="trend-up">Elite</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Practice Growth</h3>
+        <canvas id="sheppardPracticeChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Chicago Office</h3>
+        <p><strong>Leadership:</strong> Kevin Cloutier, Michael Wilson</p>
+        <p><strong>2025 Hires:</strong> Healthcare (Swill), Life Sciences/IP Team</p>
+        <p class="highlight">Focus: Healthcare, IP Litigation, PE</p>
+      </div>
+
+      <div class="card">
+        <h3>Culture Highlights</h3>
+        <p>1,950 billable target (reasonable)</p>
+        <p>40 hours wellness time</p>
+        <p>Partnership College for clear path</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faegre Drinker -->
+  <div id="faegre" class="firm-content" style="display:none;">
+    <div class="grid">
+      <div class="card">
+        <h3>Post-Merger Scale</h3>
+        <canvas id="faegreRevenueChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Headcount & Billables</h3>
+        <canvas id="faegreHeadcountChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Firm Vitals</h3>
+        <table>
+          <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+          <tr><td>Gross Revenue</td><td class="metric-value">$1.07B</td><td>Am Law 50</td></tr>
+          <tr><td>Lawyers</td><td class="metric-value">~1,200</td><td>20+ Offices</td></tr>
+          <tr><td>Billables</td><td>1,900 hrs</td><td>100 pro bono + 50 learning</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Practice Focus</h3>
+        <canvas id="faegrePracticeChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Chicago Office</h3>
+        <p><strong>2025 Promotions:</strong> IP, Investment, Product Liability</p>
+        <p><strong>Departure:</strong> Douglas Swill (Healthcare → Sheppard)</p>
+        <p class="highlight">Opportunity: Healthcare Regulatory</p>
+      </div>
+
+      <div class="card">
+        <h3>Culture & Training</h3>
+        <p>Apprenticeship Program (50 hrs learning)</p>
+        <p>Transparent leadership</p>
+        <p>Collaborative, kind environment</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Willkie Farr -->
+  <div id="willkie" class="firm-content" style="display:none;">
+    <div class="grid">
+      <div class="card">
+        <h3>Elite Financials</h3>
+        <canvas id="willkieRevenueChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Chicago Growth</h3>
+        <canvas id="willkieChicagoChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Firm Vitals</h3>
+        <table>
+          <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+          <tr><td>Gross Revenue</td><td class="metric-value">$1.3B+</td><td>Am Law 50</td></tr>
+          <tr><td>Lawyers</td><td class="metric-value">~1,200</td><td>16 Global Offices</td></tr>
+          <tr><td>Billables</td><td>None</td><td>Lockstep Bonuses</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Practice Leadership</h3>
+        <canvas id="willkiePracticeChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Chicago Office</h3>
+        <p><strong>Growth:</strong> 6 → ~100 lawyers</p>
+        <p><strong>2024 Hire:</strong> 5-Partner Corporate Team</p>
+        <p class="highlight">360° PE Platform in Midwest</p>
+      </div>
+
+      <div class="card">
+        <h3>Culture Edge</h3>
+        <p>No billable minimum</p>
+        <p>Lockstep bonuses by class year</p>
+        <p>Hands-on, small deal teams</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Firm Switcher
+  document.querySelectorAll('.firm-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.firm-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.firm-content').forEach(c => c.style.display = 'none');
+      document.getElementById(btn.dataset.firm).style.display = 'block';
+    });
+  });
+
+  // Baker Hostetler Charts
+  new Chart(document.getElementById('bakerRevenueChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2022', '2023', '2024 Est.'],
+      datasets: [{
+        label: 'Gross Revenue ($B)',
+        data: [1.0, 1.05, 1.1],
+        backgroundColor: '#d4a574',
+        borderRadius: 6
+      }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('bakerHeadcountChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Current', 'Growth (12-36 mo)'],
+      datasets: [{
+        data: [1000, 150],
+        backgroundColor: ['#4682b4', '#d4a574']
+      }]
+    },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+
+  new Chart(document.getElementById('bakerPracticeChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Litigation', 'M&A/PE', 'DADM', 'L&E'],
+      datasets: [{
+        label: 'Strength (1-10)',
+        data: [10, 8, 9, 7],
+        fill: true,
+        backgroundColor: 'rgba(212, 165, 116, 0.2)',
+        borderColor: '#d4a574'
+      }]
+    },
+    options: { scales: { r: { min: 0, max: 10 } } }
+  });
+
+  // Sheppard Mullin
+  new Chart(document.getElementById('sheppardRevenueChart'), {
+    type: 'line',
+    data: {
+      labels: ['2021', '2022', '2023'],
+      datasets: [{
+        label: 'Revenue ($B)',
+        data: [0.98, 1.05, 1.121],
+        borderColor: '#d4a574',
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  new Chart(document.getElementById('sheppardPepChart'), {
+    type: 'bar',
+    data: {
+      labels: ['PEP', 'Retention'],
+      datasets: [{
+        data: [2.325, 94],
+        backgroundColor: ['#4682b4', '#2e8b57']
+      }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('sheppardPracticeChart'), {
+    type: 'polarArea',
+    data: {
+      labels: ['Corporate', 'Litigation', 'Healthcare', 'L&E'],
+      datasets: [{
+        data: [8, 10, 9, 8],
+        backgroundColor: ['#d4a574', '#4682b4', '#2e8b57', '#708090']
+      }]
+    }
+  });
+
+  // Faegre Drinker
+  new Chart(document.getElementById('faegreRevenueChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Pre-Merger', 'Post-Merger', '2023'],
+      datasets: [{
+        label: 'Revenue ($B)',
+        data: [0.8, 0.95, 1.07],
+        backgroundColor: '#b5895c'
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  new Chart(document.getElementById('faegreHeadcountChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Lawyers', 'Support Staff (Est.)'],
+      datasets: [{
+        data: [1200, 800],
+        backgroundColor: ['#4682b4', '#e8e3dc']
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('faegrePracticeChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Litigation', 'Healthcare', 'Corporate'],
+      datasets: [{
+        label: 'Strength',
+        data: [10, 9, 7],
+        backgroundColor: 'rgba(180, 137, 92, 0.2)',
+        borderColor: '#b5895c'
+      }]
+    }
+  });
+
+  // Willkie Farr
+  new Chart(document.getElementById('willkieRevenueChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2021', '2022', '2023'],
+      datasets: [{
+        label: 'Revenue ($B)',
+        data: [1.1, 1.2, 1.3],
+        backgroundColor: '#d4a574'
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('willkieChicagoChart'), {
+    type: 'line',
+    data: {
+      labels: ['2020', '2023', '2025'],
+      datasets: [{
+        label: 'Chicago Headcount',
+        data: [6, 60, 100],
+        borderColor: '#4682b4',
+        tension: 0.3
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('willkiePracticeChart'), {
+    type: 'polarArea',
+    data: {
+      labels: ['PE/M&A', 'Asset Mgmt', 'Litigation', 'Restructuring'],
+      datasets: [{
+        data: [10, 9, 8, 8],
+        backgroundColor: ['#d4a574', '#4682b4', '#2e8b57', '#708090']
+      }]
+    }
+  });
+</script>
+
+</body>
+</html>
