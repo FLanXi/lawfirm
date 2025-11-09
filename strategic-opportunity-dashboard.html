@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Strategic Opportunity Dashboard: AmLaw 50 Lateral Targets</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f9f7f4;
+      --card-bg: #ffffff;
+      --text: #2c2c2c;
+      --accent: #d4a574;
+      --accent-dark: #b5895c;
+      --border: #e8e3dc;
+      --shadow: rgba(0,0,0,0.05);
+      --success: #2e8b57;
+      --info: #4682b4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    h1 { font-size: 2.2rem; color: var(--accent-dark); font-weight: 600; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .card { background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px var(--shadow); border: 1px solid var(--border); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card h3 { font-size: 1.3rem; margin-bottom: 15px; color: var(--accent-dark); border-bottom: 2px solid var(--accent); padding-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--accent); color: white; font-weight: 600; }
+    .chart-container { position: relative; height: 220px; margin: 15px 0; }
+    .tier-selector { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+    .tier-btn { padding: 10px 18px; background: white; border: 2px solid var(--accent); color: var(--accent-dark); border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+    .tier-btn.active, .tier-btn:hover { background: var(--accent); color: white; }
+    .highlight { background: #fff9f0; padding: 8px 12px; border-radius: 6px; font-weight: 600; color: var(--accent-dark); }
+    .metric-value { font-weight: 700; color: var(--accent-dark); }
+    .best-fit { background: var(--success) !important; color: white; font-weight: bold; }
+    .strong-fit { background: var(--info) !important; color: white; }
+    .moderate-fit { background: #708090 !important; color: white; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 1.8rem; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🗺️ Strategic Opportunity Dashboard</h1>
+    <p>AmLaw 50 Lateral Targets: Chicago WCC/CL (From White & Case Baseline)</p>
+    <p><em>Upgrade Goals: PPP >$6M | Vault/Band 1 Litigation | High Lateral Willingness</em></p>
+  </header>
+
+  <div class="tier-selector">
+    <button class="tier-btn active" data-tier="kirkland">🥇 Kirkland & Ellis</button>
+    <button class="tier-btn" data-tier="sidley">🥇 Sidley Austin</button>
+    <button class="tier-btn" data-tier="gibson">🥇 Gibson Dunn</button>
+  </div>
+
+  <!-- Tier Cards -->
+  <div id="kirkland" class="tier-content">
+    <div class="grid">
+      <div class="card"><h3>Financial Maximizer</h3><p class="highlight">PPP: <span class="metric-value">$9.25M</span> (↑$5.25M delta)</p><p>Vault #1 Chicago | Band 1 Litigation</p><p><strong>Need:</strong> WCC Partner Departure (Ralph Dado) → Investigations Void</p><p><strong>Best Fit:</strong> $5M+ portable book for max leverage/comp</p></div>
+      <div class="card"><h3>Culture/Integration</h3><p>Entrepreneurial, meritocratic. Open assignments reward high-performers.</p></div>
+    </div>
+  </div>
+  <div id="sidley" class="tier-content" style="display:none;">
+    <div class="grid">
+      <div class="card"><h3>Institutional Anchor</h3><p class="highlight">PPP: <span class="metric-value">$5.15M</span></p><p>Vault #2 Chicago | Band 1 Litigation</p><p><strong>Signal:</strong> Hired Matthew Podolsky (Acting SDNY U.S. Attorney)</p><p><strong>Best Fit:</strong> Long-term influence/leadership</p></div>
+      <div class="card"><h3>Culture/Integration</h3><p>Collegial, supportive. Laterals integrated long-term.</p></div>
+    </div>
+  </div>
+  <div id="gibson" class="tier-content" style="display:none;">
+    <div class="grid">
+      <div class="card"><h3>Prestige Maximizer</h3><p class="highlight">PPP: <span class="metric-value">$7.17M</span></p><p>#1 Global Investigations (7 yrs)</p><p><strong>Signal:</strong> Acquired Barry Berke + elite trial team</p><p><strong>Best Fit:</strong> Cross-border/FCPA/anti-corruption</p></div>
+      <div class="card"><h3>Culture/Integration</h3><p>Elite focus. "New Lawyer Academy" for laterals.</p></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>📊 Chart 1: PPP Comparison (vs. W&C $4M Baseline)</h3>
+      <div class="chart-container"><canvas id="pppChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>📈 Chart 2: Recruiting Momentum</h3>
+      <div class="chart-container"><canvas id="momentumChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>🎯 Chart 3: Strategic Fit Matrix</h3>
+      <table>
+        <tr><th></th><th>Kirkland (Financial)</th><th>Sidley (Influence)</th><th>Gibson (Prestige)</th></tr>
+        <tr><td><strong>Maximize PPP</strong></td><td class="best-fit">✅ BEST FIT</td><td class="moderate-fit">Moderate</td><td class="strong-fit">Strong</td></tr>
+        <tr><td><strong>Anchor Local Influence</strong></td><td class="strong-fit">Strong</td><td class="best-fit">✅ BEST FIT</td><td class="moderate-fit">Niche</td></tr>
+        <tr><td><strong>Elevate Global Prestige</strong></td><td class="strong-fit">Strong</td><td class="strong-fit">Strong</td><td class="best-fit">✅ BEST FIT</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔍 Recruiting Snapshot (2024-2025)</h3>
+      <table>
+        <tr><th>Firm</th><th>Recent Action</th><th>Key Hire/Departure</th><th>Signal</th></tr>
+        <tr><td>Kirkland</td><td>Departure</td><td>Ralph Dado</td><td>Capacity Gap</td></tr>
+        <tr><td>Sidley</td><td>Hire</td><td>Matthew Podolsky</td><td>National Expansion</td></tr>
+        <tr><td>Gibson</td><td>Team Hire</td><td>Barry Berke + Team</td><td>Aggressive Build</td></tr>
+        <tr><td>Skadden</td><td>Hire</td><td>Matthew Regan</td><td>Reinforce Bench</td></tr>
+        <tr><td>Latham</td><td>Team Hire</td><td>Ryan Dahl + Team</td><td>High Investment</td></tr>
+      </table>
+    </div>
+    <div class="card" style="grid-column: span 2;">
+      <h3>🗺️ Geographic Leverage Map (Chicago)</h3>
+      <table>
+        <tr><th>Firm</th><th>Chicago Bench</th><th>Leverage</th></tr>
+        <tr><td>Kirkland</td><td>>800 attorneys</td><td>Maximum (Dominant)</td></tr>
+        <tr><td>Sidley</td><td>High density; Local WCC Leader</td><td>Institutional Anchor</td></tr>
+        <tr><td>Gibson</td><td>Global hub</td><td>Specialized Elite</td></tr>
+      </table>
+      <p class="highlight">Optimal Window: Q1–Q2 2026</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tier Switcher
+  document.querySelectorAll('.tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tier-content').forEach(c => c.style.display = 'none');
+      document.getElementById(btn.dataset.tier).style.display = 'block';
+    });
+  });
+
+  // PPP Bar Chart
+  new Chart(document.getElementById('pppChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Kirkland', 'Gibson', 'Paul Weiss', 'Skadden', 'Sidley', 'Ropes', 'W&C Baseline', 'Paul Hastings'],
+      datasets: [{ label: 'PPP ($M)', data: [9.25, 7.17, 6.5, 6, 5.15, 5, 4, 3.8], backgroundColor: '#d4a574', borderRadius: 6 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Momentum Horizontal Bar
+  new Chart(document.getElementById('momentumChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Kirkland', 'Sidley', 'Gibson', 'Skadden', 'Latham'],
+      datasets: [{ label: 'Momentum Score', data: [9, 8.5, 9.5, 8, 8.5], backgroundColor: ['#2e8b57', '#4682b4', '#d4a574'], indexAxis: 'y' }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 10 } } }
+  });
+</script>
+</body>
+</html>
